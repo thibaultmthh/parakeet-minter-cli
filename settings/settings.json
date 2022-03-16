@@ -1,0 +1,6 @@
+{
+	"eth_rpc": "https://rinkeby.infura.io/v3/3d690a2741d44fcaa13ed569d2985a38",
+	"blocknative_api_key": "07c7e0e1-e6b8-4da1-b464-e7950ba1fb87",
+	"etherscan_api_key": "B4E1A4DMBVC2F1MQ1WJS1D8C3NNWSSN6PF",
+	"testnet": "true"
+}
