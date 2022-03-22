@@ -1,6 +1,6 @@
 {
 	"eth_rpc": "https://mainnet.infura.io/v3/3d690a2741d44fcaa13ed569d2985a38",
-	"testnet_eth_rpc": "",
+	"testnet_eth_rpc": "https://rinkeby.infura.io/v3/3d690a2741d44fcaa13ed569d2985a38",
 	"webhook_url": "https://discord.com/api/webhooks/934926406398386257/STYpiz-jBw7rFcldDzARxi5_G3Qj_RcB6lYHOwg86aOcAbfZPG5umt3gBqfnzRtJL52s",
 
 	"blocknative_api_key": "07c7e0e1-e6b8-4da1-b464-e7950ba1fb87",

@@ -5,6 +5,7 @@ import { Contract } from "web3-eth-contract";
 
 import { getTaskGasPrice, getTaskGasWarPrice } from "./gas";
 import { embedAndSend } from "./webhooks";
+import { etherscanBase } from "../constantes";
 
 const {
 	task_wallets,
@@ -353,20 +354,29 @@ class TasksManager {
 							`Transaction sent ! Gwei : ${data.gas_price} | Hash : ${hash} | data :` +
 								data.parameters
 						);
-						embedAndSend(`Transaction sent !`, hash, "info", [
-							{
-								name: "Price",
-								value: data.value.toString(),
-							},
-							{
-								name: "Gas",
-								value: data.gas_price.toString(),
-							},
-							{
-								name: "Wallet",
-								value: `||${data.wallet.name}||`,
-							},
-						]);
+						embedAndSend(
+							`Transaction sent !`,
+							`${etherscanBase}/tx/${hash}`,
+							"info",
+							[
+								{
+									name: "Price",
+									value: data.value.toString(),
+								},
+								{
+									name: "Gas",
+									value: data.gas_price.toString(),
+								},
+								{
+									name: "Wallet",
+									value: `||${data.wallet.name}||`,
+								},
+								{
+									name: "Parameters",
+									value: data.parameters.join(", "),
+								},
+							]
+						);
 
 						this.update_task_status(data.wallet.name, {
 							lastupdate: Date.now(),
@@ -388,7 +398,7 @@ class TasksManager {
 				const message = `Included in block ${receipt.blockNumber} | Cost : ${price} ETH`;
 				embedAndSend(
 					`Included in block !`,
-					` ${receipt.blockNumber} | Cost : ${price} ETH`,
+					`${etherscanBase}block/${receipt.blockNumber}`,
 					"success",
 					[
 						{
@@ -402,6 +412,10 @@ class TasksManager {
 						{
 							name: "Wallet",
 							value: `||${data.wallet.name}||`,
+						},
+						{
+							name: "Gas Cost",
+							value: price,
 						},
 					]
 				);
