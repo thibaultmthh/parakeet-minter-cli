@@ -19,7 +19,7 @@ export default class Index extends React.Component<
 			<BaseBorder>
 				<Box display="flex" justifyContent="center">
 					<Gradient name="retro">
-						<BigText text="Parakeet" font="block" />
+						<BigText text="Unnamed" font="block" />
 					</Gradient>
 				</Box>
 

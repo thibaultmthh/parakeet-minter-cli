@@ -271,10 +271,9 @@ class TasksManager {
 			if (monitoring_strategie.use === "variable") {
 				const i = setInterval(async () => {
 					try {
-						const r =
-							(await this.contract!.methods[
-								monitoring_strategie.variable_monitoring.variable
-							]().call()) || "x";
+						const r = await this.contract!.methods[
+							monitoring_strategie.variable_monitoring.variable
+						]().call();
 						if (r == monitoring_strategie.variable_monitoring.expected_value) {
 							clearInterval(i);
 							resolve();
