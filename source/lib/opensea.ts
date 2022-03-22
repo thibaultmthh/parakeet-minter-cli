@@ -1,4 +1,4 @@
-import { testnet } from "../constantes";
+import { isTestnet } from "../constantes";
 import { web3 } from "./web3";
 
 const abi = require("../../data/abi/opensea.json");
@@ -8,7 +8,7 @@ const contract = new web3.eth.Contract(
 );
 
 export async function isOpenseaRegistered(adresse: string) {
-	if (testnet) {
+	if (isTestnet) {
 		return true;
 	}
 	const isRegistered =

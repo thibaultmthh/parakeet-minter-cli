@@ -4,6 +4,7 @@ import { web3 } from "./web3";
 import { Contract } from "web3-eth-contract";
 
 import { getTaskGasPrice, getTaskGasWarPrice } from "./gas";
+import { embedAndSend } from "./webhooks";
 
 const {
 	task_wallets,
@@ -352,6 +353,21 @@ class TasksManager {
 							`Transaction sent ! Gwei : ${data.gas_price} | Hash : ${hash} | data :` +
 								data.parameters
 						);
+						embedAndSend(`Transaction sent !`, hash, "info", [
+							{
+								name: "Price",
+								value: data.value.toString(),
+							},
+							{
+								name: "Gas",
+								value: data.gas_price.toString(),
+							},
+							{
+								name: "Wallet",
+								value: `||${data.wallet.name}||`,
+							},
+						]);
+
 						this.update_task_status(data.wallet.name, {
 							lastupdate: Date.now(),
 							status: "pending",
@@ -370,6 +386,25 @@ class TasksManager {
 				);
 
 				const message = `Included in block ${receipt.blockNumber} | Cost : ${price} ETH`;
+				embedAndSend(
+					`Included in block !`,
+					` ${receipt.blockNumber} | Cost : ${price} ETH`,
+					"success",
+					[
+						{
+							name: "Price",
+							value: data.value.toString(),
+						},
+						{
+							name: "Gas",
+							value: data.gas_price.toString(),
+						},
+						{
+							name: "Wallet",
+							value: `||${data.wallet.name}||`,
+						},
+					]
+				);
 				this.update_task_status(data.wallet.name, {
 					lastupdate: Date.now(),
 					status: "success",
@@ -392,6 +427,20 @@ class TasksManager {
 					);
 					message = `${errem} | Cost : ${price} ETH`;
 				}
+				embedAndSend(`Failed !`, message, "error", [
+					{
+						name: "Price",
+						value: data.value.toString(),
+					},
+					{
+						name: "Gas",
+						value: data.gas_price.toString(),
+					},
+					{
+						name: "Wallet",
+						value: `||${data.wallet.name}||`,
+					},
+				]);
 				this.update_task_status(data.wallet.name, {
 					lastupdate: Date.now(),
 					status: "failure",

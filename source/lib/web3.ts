@@ -1,8 +1,7 @@
 import Web3 from "web3";
+import { ethRpc } from "../constantes";
 
-const { eth_rpc } = require("../../settings/settings.json");
-
-export const web3 = new Web3(new Web3.providers.HttpProvider(eth_rpc));
+export const web3 = new Web3(new Web3.providers.HttpProvider(ethRpc));
 
 export const WEI = 1e18;
 
