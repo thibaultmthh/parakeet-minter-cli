@@ -4,7 +4,8 @@ import fs from "fs";
 import cheerio from "cheerio";
 import { etherscan_api_link } from "../constantes";
 
-const { etherscan_api_key } = require("../../settings/settings.json");
+const { etherscan_api_key } = require(process.cwd() +
+	"/settings/settings.json");
 
 export async function getContractABI(adresse: string) {
 	const abis = fs.readdirSync("./data/abi");

@@ -1,7 +1,7 @@
 import { isTestnet } from "../constantes";
 import { web3 } from "./web3";
 
-const abi = require("../../data/abi/opensea.json");
+const abi = require(process.cwd() + "/data/abi/opensea.json");
 const contract = new web3.eth.Contract(
 	abi,
 	"0xa5409ec958c83c3f309868babaca7c86dcb077c1"

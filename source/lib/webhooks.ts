@@ -1,5 +1,5 @@
 import { MessageEmbed, WebhookClient } from "discord.js";
-const { webhook_url } = require("../../settings/settings.json");
+const { webhook_url } = require(process.cwd() + "/settings/settings.json");
 
 const webhookClient = new WebhookClient({ url: webhook_url });
 

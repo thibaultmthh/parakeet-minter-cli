@@ -17,10 +17,8 @@ interface ITasksToDo {
 	state: "pending" | "loading" | "success" | "warning" | "error";
 }
 
-const {
-	stock_variable,
-	contract_address,
-} = require("../../settings/eth_task_settings.js");
+const { stock_variable, contract_address } = require(process.cwd() +
+	"/settings/eth_task_settings.js");
 let manualAproved = false;
 
 // let monitoringGood = false;

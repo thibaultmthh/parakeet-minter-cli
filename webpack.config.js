@@ -7,7 +7,7 @@ module.exports = {
 	entry: './source/cli.tsx',
 	// devtool: 'inline-source-map',
 	externals: [nodeExternals(), function ({ context, request }, callback) {
-		if (/settings/.test(request)) {
+		if (/settings/.test(request) || /data/.test(request)) {
 			// Externalize to a commonjs module using the request path
 			return callback(null, 'commonjs ' + request);
 		}

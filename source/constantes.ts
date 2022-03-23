@@ -1,8 +1,5 @@
-const {
-	testnet,
-	eth_rpc,
-	testnet_eth_rpc,
-} = require("../settings/settings.json");
+const { testnet, eth_rpc, testnet_eth_rpc } = require(process.cwd() +
+	"/settings/settings.json");
 
 export const isTestnet = testnet;
 export const etherscan_api_link = isTestnet

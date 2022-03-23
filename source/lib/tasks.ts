@@ -19,7 +19,7 @@ const {
 	function_name,
 	value,
 	gas_war_strategie,
-} = require("../../settings/eth_task_settings.js");
+} = require(process.cwd() + "/settings/eth_task_settings.js");
 
 export interface ITXInfo {
 	wallet: IWalletInfo;

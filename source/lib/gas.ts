@@ -2,12 +2,10 @@ import axios from "axios";
 import { web3 } from "./web3";
 // import { web3 } from "./web3";
 
-const { blocknative_api_key } = require("../../settings/settings.json");
-const {
-	gas_price,
-	gas_war_strategie,
-} = require("../../settings/eth_task_settings.js");
-
+const { blocknative_api_key } = require(process.cwd() +
+	"/settings/settings.json");
+const { gas_price, gas_war_strategie } = require(process.cwd() +
+	"/settings/eth_task_settings.js");
 
 interface gasData {
 	currentBlockNumber: number;
