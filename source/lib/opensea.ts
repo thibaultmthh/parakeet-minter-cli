@@ -1,7 +1,9 @@
 import { isTestnet } from "../constantes";
 import { web3 } from "./web3";
+import fs from "fs";
 
-const abi = require(process.cwd() + "/data/abi/opensea.json");
+const abi = JSON.parse(fs.readFileSync("data/abi/opensea.json", "utf8"));
+
 const contract = new web3.eth.Contract(
 	abi,
 	"0xa5409ec958c83c3f309868babaca7c86dcb077c1"
