@@ -1,4 +1,6 @@
-import path from "path";
+import fs from "fs";
+
+const settings = fs.readFileSync("settings/settings.json", "utf8");
 
 export const {
 	webhook_url,
@@ -7,4 +9,4 @@ export const {
 	blocknative_api_key,
 	etherscan_api_key,
 	testnet,
-} = require(path.resolve(process.cwd(), "settings/settings.json"));
+} = JSON.parse(settings);
