@@ -1,5 +1,5 @@
 import { MessageEmbed, WebhookClient } from "discord.js";
-const { webhook_url } = require(process.cwd() + "/settings/settings.json");
+import { webhook_url } from "./settWarper";
 
 const webhookClient = new WebhookClient({ url: webhook_url });
 

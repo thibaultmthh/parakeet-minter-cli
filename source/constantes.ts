@@ -1,5 +1,4 @@
-const { testnet, eth_rpc, testnet_eth_rpc } = require(process.cwd() +
-	"/settings/settings.json");
+import { eth_rpc, testnet, testnet_eth_rpc } from "./lib/settWarper";
 
 export const isTestnet = testnet;
 export const etherscan_api_link = isTestnet
