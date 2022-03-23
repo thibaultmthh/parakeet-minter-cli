@@ -21,7 +21,7 @@
 		"targets": [
 			"node16-win-x64"
 		],
-		"outputPath": "build/run",
+		"outputPath": "build",
 		"assets": [
 			"node_modules/figlet/**/*.*",
 			"node_modules/figlet/fonts/Standard.flf"
