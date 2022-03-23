@@ -8,6 +8,7 @@ const {
 	gas_war_strategie,
 } = require("../../settings/eth_task_settings.js");
 
+
 interface gasData {
 	currentBlockNumber: number;
 	msSinceLastBlock: number;
@@ -115,7 +116,7 @@ function taskGasPrice(gas: string) {
 }
 
 export function getTaskGasPrice() {
-	return taskGasPrice(gas_price);
+	return Math.round(taskGasPrice(gas_price) * 100) / 100;
 }
 
 export function getTaskGasWarPrice() {
@@ -123,5 +124,5 @@ export function getTaskGasWarPrice() {
 	if (gas > gas_war_strategie.max_gas_price) {
 		return gas_war_strategie.max_gas_price;
 	}
-	return gas;
+	return Math.round(gas * 10) / 10;
 }

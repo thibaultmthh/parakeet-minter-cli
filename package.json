@@ -18,14 +18,14 @@
 	],
 	"pkg": {
 		"scripts": [],
-		"targets": [ "node16-win-x64" ],
-		"outputPath": "build",
+		"targets": [
+			"node16-win-x64"
+		],
+		"outputPath": "build/run",
 		"assets": [
 			"node_modules/figlet/**/*.*",
 			"node_modules/figlet/fonts/Standard.flf"
-		  ]
-		""
-
+		]
 	},
 	"dependencies": {
 		"-": "^0.0.1",

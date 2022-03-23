@@ -6,3 +6,5 @@ data/abi
 bruh
 build
 pre_build
+.DS_Store
+settings/wallets.csv

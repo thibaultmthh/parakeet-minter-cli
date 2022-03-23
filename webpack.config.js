@@ -6,13 +6,21 @@ const JavaScriptObfuscator = require('webpack-obfuscator');
 module.exports = {
 	entry: './source/cli.tsx',
 	// devtool: 'inline-source-map',
-	externals: [nodeExternals()],
+	externals: [nodeExternals(), function ({ context, request }, callback) {
+		if (/settings/.test(request)) {
+			// Externalize to a commonjs module using the request path
+			return callback(null, 'commonjs ' + request);
+		}
+
+		// Continue without externalizing the import
+		callback();
+	}],
 	module: {
 		rules: [
 			{
 				test: /\.tsx?$/,
 				use: 'ts-loader',
-				exclude: /node_modules/,
+				exclude: [/node_modules/],
 			},
 		],
 	},
@@ -24,8 +32,11 @@ module.exports = {
 		})
 	],
 	resolve: {
-		extensions: ['.tsx', '.ts', '.js'],
+		extensions: ['.tsx', '.ts'],
 	},
+
+
+
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'pre_build'),

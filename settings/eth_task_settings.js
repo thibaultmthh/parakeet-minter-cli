@@ -4,12 +4,12 @@ const axios = require('axios');
 // Settings for the task
 
 
-const task_wallets = ["testwallet"];
+const task_wallets = ["main"];
 // const task_wallets = [];
 // contract options
-const contract_address = "0x58bd8dc8a85fcb34e63c41ca4254c42e4d3e990a";
-const function_name = "create";
-const value = 0;
+const contract_address = "0xe935e764da0f1a2597f9c1bf13a64515bff9f7d7";
+const function_name = "mint";
+const value = 0.207;
 // parameters option
 const parameters = async (adresse) => {
 	// const options = {
@@ -35,7 +35,7 @@ const parameters = async (adresse) => {
 
 	return new Promise(async (resolve, reject) => {
 
-		resolve([adresse]);
+		resolve([3]);
 	});
 
 };
@@ -64,20 +64,20 @@ const stock_variable = "totalSupply"
 
 
 // Gas strategie
-const gas_price = "slow" // "slow", "fast", "xs20", "xf20", "200"
+const gas_price = "xf1.1" // "slow", "fast", "xs20", "xf20", "200"
 
 const gas_war_strategie = {
-	resend: 10, // delay update gas price
+	resend: 7, // delay update gas price
 	gas_price: "xf1.2", // "slow", "fast", "xs20", "xf20", "200"
-	max_gas_price: 4100,
+	max_gas_price: 900,
 }
 
 const monitoring_strategie = {
 	delay: 1,
-	// use: "variable",
-	use: "function",
+	use: "variable",
+	// use: "function",
 	variable_monitoring: {
-		variable: "mainSaleOn",
+		variable: "minting",
 		expected_value: true,
 		stock_under: 4000,
 	},
