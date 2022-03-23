@@ -41,9 +41,9 @@ export async function getContractTag(address: string) {
 	const content = await axios.get(`https://etherscan.io/address/${address}`);
 	const $ = cheerio.load(content.data);
 
-	const result = $("meta[property='og:title']")
+	const result = ($("meta[property='og:title']")
 		.attr("content")
-		?.split("|")[0] as string;
+		?.split("|")[0] || "") as string;
 	if (!result.includes("Contract")) {
 		indexedContracts[address] = result;
 		fs.writeFileSync(

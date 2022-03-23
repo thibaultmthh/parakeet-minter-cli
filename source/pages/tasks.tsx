@@ -8,8 +8,7 @@ import { UseInput2 } from "../components/useInput2";
 import { ITXInfo, tasksManager } from "../lib/tasks";
 import { IWalletInfo } from "../lib/wallets";
 import { getContractTag } from "../lib/contract";
-
-// const { contract_address } = require("../../settings/eth_task_settings.js");
+import { contract_address, stock_variable } from "../lib/ethTaskWraper";
 
 interface ITasksToDo {
 	label: string;
@@ -17,8 +16,6 @@ interface ITasksToDo {
 	state: "pending" | "loading" | "success" | "warning" | "error";
 }
 
-const { stock_variable, contract_address } = require(process.cwd() +
-	"/settings/eth_task_settings.js");
 let manualAproved = false;
 
 // let monitoringGood = false;

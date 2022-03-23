@@ -6,8 +6,7 @@ import { Contract } from "web3-eth-contract";
 import { getTaskGasPrice, getTaskGasWarPrice } from "./gas";
 import { embedAndSend } from "./webhooks";
 import { etherscanBase } from "../constantes";
-
-const {
+import {
 	task_wallets,
 	parameters,
 	monitoring_strategie,
@@ -19,7 +18,7 @@ const {
 	function_name,
 	value,
 	gas_war_strategie,
-} = require(process.cwd() + "/settings/eth_task_settings.js");
+} from "./ethTaskWraper";
 
 export interface ITXInfo {
 	wallet: IWalletInfo;
@@ -216,6 +215,8 @@ class TasksManager {
 								try {
 									this.contract?.methods[function_name](...params);
 								} catch (e: any) {
+									console.log(e);
+
 									const message = e.message.split("\n")[0];
 									this.update_frontend_task(
 										"Fetch parameters",

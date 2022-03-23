@@ -1,10 +1,8 @@
 import axios from "axios";
+import { gas_price, gas_war_strategie } from "./ethTaskWraper";
 import { blocknative_api_key } from "./settWarper";
 import { web3 } from "./web3";
 // import { web3 } from "./web3";
-
-const { gas_price, gas_war_strategie } = require(process.cwd() +
-	"/settings/eth_task_settings.js");
 
 interface gasData {
 	currentBlockNumber: number;
