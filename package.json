@@ -2,20 +2,31 @@
 	"name": "parakeet-minter-cli",
 	"version": "0.0.0",
 	"license": "MIT",
-	"bin": "dist/cli.js",
+	"bin": "pre_build/bundle.js",
 	"engines": {
 		"node": ">=10"
 	},
 	"scripts": {
-		"build": "tsc && chmod +x dist/cli.js",
-		"start": "npm run build && dist/cli.js",
+		"build": "tsc ",
+		"start": "npm run build && node dist/cli.js",
 		"pretest": "npm run build",
 		"test": "xo && ava",
-		"package": "npx webpack --config webpack.config.js"
+		"package": "npx webpack --config webpack.config.js && pkg ."
 	},
 	"files": [
 		"dist/cli.js"
 	],
+	"pkg": {
+		"scripts": [],
+		"targets": [ "node16-win-x64" ],
+		"outputPath": "build",
+		"assets": [
+			"node_modules/figlet/**/*.*",
+			"node_modules/figlet/fonts/Standard.flf"
+		  ]
+		""
+
+	},
 	"dependencies": {
 		"-": "^0.0.1",
 		"@types/ink-big-text": "^1.2.1",
