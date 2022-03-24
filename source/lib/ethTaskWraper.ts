@@ -6,7 +6,6 @@ const eth_task_file = fs.readFileSync(
 );
 
 const data = eval("(" + eth_task_file + ")")();
-console.log(data, "is data");
 
 export const {
 	task_wallets,

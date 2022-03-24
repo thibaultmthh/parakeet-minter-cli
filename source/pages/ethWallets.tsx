@@ -102,10 +102,15 @@ export default class EthWallets extends React.Component<
 									</Text>
 								</Box>
 								<Box width={"14%"} justifyContent="center">
-									<Text>
-										{this.state.walletsInfo[wallet.adresse]?.isOpenseaRegistered
-											? "🟢"
-											: "🔴"}
+									<Text
+										backgroundColor={
+											this.state.walletsInfo[wallet.adresse]
+												?.isOpenseaRegistered
+												? "green"
+												: "red"
+										}
+									>
+										{"   "}
 									</Text>
 								</Box>
 							</Box>
@@ -113,7 +118,7 @@ export default class EthWallets extends React.Component<
 					</Box>
 					<Box display="flex" justifyContent="flex-end">
 						<Box padding={2} width={"45%"} marginRight={3}>
-							<Text>Total 💰 = {Math.round(sold_total * 1000) / 1000}</Text>
+							<Text>Total = {Math.round(sold_total * 1000) / 1000}</Text>
 						</Box>
 					</Box>
 				</Box>

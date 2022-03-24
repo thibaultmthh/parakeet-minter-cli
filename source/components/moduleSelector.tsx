@@ -3,15 +3,15 @@ import React from "react";
 
 const modules = [
 	{
-		label: "ETH minter ⛏",
+		label: "ETH minter ",
 		value: "ethminter",
 	},
 	{
-		label: "ETH wallets 💰",
+		label: "ETH wallets ",
 		value: "ethwallets",
 	},
 	{
-		label: "SOL wallets 💰",
+		label: "SOL wallets ",
 		value: "solwallets",
 	},
 ];
