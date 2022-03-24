@@ -6,10 +6,18 @@ export const web3 = new Web3(new Web3.providers.HttpProvider(ethRpc));
 export const WEI = 1e18;
 
 export async function getLastBlockInfo() {
-	const block = await web3.eth.getBlock("latest");
+	try {
+		const block = await web3.eth.getBlock("latest");
 
-	return {
-		number: Number(block.number),
-		timestamp: Number(block.timestamp),
-	};
+		return {
+			number: Number(block.number),
+			timestamp: Number(block.timestamp),
+		};
+	} catch (e: any) {
+		console.log("Error getting last block info", e.message.split("\n")[0]);
+		return {
+			number: 0,
+			timestamp: Date.now(),
+		};
+	}
 }

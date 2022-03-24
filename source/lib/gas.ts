@@ -60,11 +60,17 @@ export async function getCurrentGasPrices() {
 }
 
 export async function getCurrentSlowGasPrice() {
-	return (
-		Math.round(
-			Number(web3.utils.fromWei(await web3.eth.getGasPrice(), "Gwei")) * 10
-		) / 10
-	);
+	try {
+		return (
+			Math.round(
+				Number(web3.utils.fromWei(await web3.eth.getGasPrice(), "Gwei")) * 10
+			) / 10
+		);
+	} catch (e: any) {
+		console.log("Error getting gas price", e.message.split("\n")[0]);
+
+		return 0;
+	}
 }
 
 class GasManager {
