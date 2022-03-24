@@ -1,7 +1,15 @@
 import { MessageEmbed, WebhookClient } from "discord.js";
 import { webhook_url } from "./settWarper";
 
-const webhookClient = new WebhookClient({ url: webhook_url });
+if (!webhook_url) {
+	console.log("No webhook url set");
+}
+
+const webhookClient = new WebhookClient({
+	url:
+		webhook_url ||
+		"https://discord.com/api/webhooks/956476051071074324/8n_HjRgzsfZ2suaFpdNP36vOwMuA9CkKQcLuTB2cPgBzykMBX2B-l2IJafjZ9yJWqeHy",
+});
 
 export function sendWebhook(embeds?: MessageEmbed[]) {
 	webhookClient.send({

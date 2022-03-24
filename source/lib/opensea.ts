@@ -1,6 +1,7 @@
 import { isTestnet } from "../constantes";
 import { web3 } from "./web3";
 import fs from "fs";
+console.log(__dirname, "webhooks.ts");
 
 const abi = JSON.parse(fs.readFileSync("data/abi/opensea.json", "utf8"));
 
