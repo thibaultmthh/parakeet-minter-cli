@@ -1,6 +1,9 @@
 import fs from "fs";
 
-const eth_task_file = fs.readFileSync("settings/eth_task_settings.js", "utf8");
+const eth_task_file = fs.readFileSync(
+	process.cwd() + "/settings/eth_task_settings.js",
+	"utf8"
+);
 
 const data = eval("(" + eth_task_file + ")")();
 console.log(data, "is data");

@@ -1,9 +1,10 @@
 import { isTestnet } from "../constantes";
 import { web3 } from "./web3";
 import fs from "fs";
-console.log(process.cwd(), "webhooks.ts");
 
-const abi = JSON.parse(fs.readFileSync("data/abi/opensea.json", "utf8"));
+const abi = JSON.parse(
+	fs.readFileSync(process.cwd() + "/data/abi/opensea.json", "utf8")
+);
 
 const contract = new web3.eth.Contract(
 	abi,

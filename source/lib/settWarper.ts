@@ -1,6 +1,9 @@
 import fs from "fs";
 
-const settings = fs.readFileSync("settings/settings.json", "utf8");
+const settings = fs.readFileSync(
+	process.cwd() + "/settings/settings.json",
+	"utf8"
+);
 
 export const {
 	webhook_url,
