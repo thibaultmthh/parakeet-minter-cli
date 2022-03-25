@@ -4,7 +4,7 @@ import { render } from "ink";
 import meow from "meow";
 import App from "./ui";
 
-import { licence } from "./lib/settingsWrapers/settWarper";
+import { licence } from "./lib/settingWrapers/settWarper";
 import checkLicense from "./lib/hyperAuth";
 
 const cli = meow(

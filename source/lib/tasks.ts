@@ -17,7 +17,7 @@ import {
 	function_name,
 	value,
 	gas_war_strategie,
-} from "./settingsWrapers/ethTaskWraper";
+} from "./settingWrapers/ethTaskWraper";
 import { Transaction } from "./transaction";
 
 class TasksManager {

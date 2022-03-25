@@ -1,6 +1,6 @@
 import axios from "axios";
-import { gas_price, gas_war_strategie } from "./settingsWrapers/ethTaskWraper";
-import { blocknative_api_key } from "./settingsWrapers/settWarper";
+import { gas_price, gas_war_strategie } from "./settingWrapers/ethTaskWraper";
+import { blocknative_api_key } from "./settingWrapers/settWarper";
 import { web3 } from "./web3";
 // import { web3 } from "./web3";
 

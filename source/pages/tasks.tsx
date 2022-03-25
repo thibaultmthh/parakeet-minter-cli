@@ -11,7 +11,7 @@ import { getContractTag } from "../lib/contract";
 import {
 	contract_address,
 	stock_variable,
-} from "../lib/settingsWrapers/ethTaskWraper";
+} from "../lib/settingWrapers/ethTaskWraper";
 import { Transaction } from "../lib/transaction";
 import { TaskTx } from "../components/tasks/task";
 

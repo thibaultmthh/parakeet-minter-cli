@@ -1,5 +1,5 @@
 import { MessageEmbed, WebhookClient } from "discord.js";
-import { webhook_url } from "./settingsWrapers/settWarper";
+import { webhook_url } from "./settingWrapers/settWarper";
 
 if (!webhook_url) {
 	console.log("No webhook url set");
