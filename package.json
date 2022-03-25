@@ -1,5 +1,5 @@
 {
-	"name": "parakeet-minter-cli",
+	"name": "zentaurus",
 	"version": "0.0.0",
 	"license": "MIT",
 	"bin": "pre_build/bundle.js",
