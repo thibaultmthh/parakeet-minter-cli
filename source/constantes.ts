@@ -1,4 +1,8 @@
-import { eth_rpc, testnet, testnet_eth_rpc } from "./lib/settWarper";
+import {
+	eth_rpc,
+	testnet,
+	testnet_eth_rpc,
+} from "./lib/settingsWrapers/settWarper";
 
 export const isTestnet = testnet;
 export const etherscan_api_link = isTestnet

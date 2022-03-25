@@ -3,7 +3,7 @@ import fs from "fs";
 
 import cheerio from "cheerio";
 import { etherscan_api_link } from "../constantes";
-import { etherscan_api_key } from "./settWarper";
+import { etherscan_api_key } from "./settingsWrapers/settWarper";
 
 const abiPath = `${process.cwd()}/data/abi/`;
 

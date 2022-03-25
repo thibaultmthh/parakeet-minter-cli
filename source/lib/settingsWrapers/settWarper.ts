@@ -12,4 +12,5 @@ export const {
 	blocknative_api_key,
 	etherscan_api_key,
 	testnet,
+	licence,
 } = JSON.parse(settings);

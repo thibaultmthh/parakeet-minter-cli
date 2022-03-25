@@ -4,8 +4,7 @@ import { web3 } from "./web3";
 import { Contract } from "web3-eth-contract";
 
 import { getTaskGasPrice, getTaskGasWarPrice } from "./gas";
-import { embedAndSend } from "./webhooks";
-import { etherscanBase } from "../constantes";
+
 import {
 	task_wallets,
 	parameters,
@@ -18,21 +17,8 @@ import {
 	function_name,
 	value,
 	gas_war_strategie,
-} from "./ethTaskWraper";
-
-export interface ITXInfo {
-	wallet: IWalletInfo;
-	gas_limit: number;
-	gas_price: number;
-	nonce: number;
-	to: string;
-	parameters: any[];
-	value: number;
-	hash: string;
-	status: "draft" | "pending" | "success" | "failure";
-	lastupdate: number;
-	message: string;
-}
+} from "./settingsWrapers/ethTaskWraper";
+import { Transaction } from "./transaction";
 
 class TasksManager {
 	wallets: IWalletInfo[];
@@ -41,7 +27,7 @@ class TasksManager {
 	supply: string;
 	monitor_passed: boolean;
 	manual_approved: boolean;
-	transaction: Record<string, ITXInfo>;
+	transaction: Record<string, Transaction>;
 
 	update_frontend_wallet_info: (w: IWalletInfo[]) => void;
 	update_frontend_parameters: (p: Record<string, any[]>) => void;
@@ -51,8 +37,10 @@ class TasksManager {
 		state: "pending" | "loading" | "success" | "warning" | "error"
 	) => void;
 
-	update_frontend_task_data: (data: Record<string, ITXInfo>) => void;
+	update_frontend_task_data: (data: Record<string, Transaction>) => void;
 	gas_updated: number;
+
+	gaswar_timer: NodeJS.Timer | undefined;
 
 	constructor() {
 		this.wallets = [];
@@ -81,21 +69,25 @@ class TasksManager {
 				const wallet = this.wallets[i];
 				if (wallet) {
 					const nonce = await web3.eth.getTransactionCount(wallet.adresse);
-					const data: ITXInfo = {
-						wallet,
-						gas_limit,
-						gas_price,
-						to: contract_address,
-						parameters: this.parameters_per_wallets[wallet.name] || [],
-						value,
-						hash: "",
-						status: "draft",
-						nonce,
-						lastupdate: Date.now(),
-						message: "",
-					};
-					this.transaction[wallet.name] = data;
-					this.taskWrite(data);
+
+					this.transaction[wallet.name] = new Transaction(
+						this.contract,
+						{
+							wallet,
+							gas_limit,
+							to: contract_address,
+							parameters: this.parameters_per_wallets[wallet.name],
+							value,
+							nonce,
+							function: function_name,
+						},
+						() => {
+							this.update_frontend_task_data(this.transaction);
+						}
+					);
+
+					this.transaction[wallet.name]?.sendTx(gas_price);
+					// this.taskWrite(data);
 					this.update_frontend_task(
 						"Submit transactions",
 						`[${i}/${this.wallets.length}]`,
@@ -110,7 +102,7 @@ class TasksManager {
 			);
 			this.update_frontend_task("Gas management", "", "loading");
 
-			setInterval(() => {
+			this.gaswar_timer = setInterval(() => {
 				this.applyGasStrategy();
 			}, gas_war_strategie.resend * 1000);
 		}
@@ -306,188 +298,22 @@ class TasksManager {
 		});
 	}
 
-	// Transactions
-	async taskWrite(data: ITXInfo) {
-		if (!this.contract) {
-			console.log("No contract initialised");
-
-			return;
-		}
-
-		try {
-			this.contract.methods[function_name](...data.parameters);
-		} catch (e: any) {
-			const message = e.message.split("\n")[0];
-			this.update_task_status(data.wallet.name, {
-				lastupdate: Date.now(),
-				status: "failure",
-				message: `${message} `,
-			});
-
-			return;
-		}
-
-		const tx = this.contract.methods[function_name](...data.parameters);
-
-		const options = {
-			from: data.wallet.adresse,
-			gas: data.gas_limit,
-			gasPrice: web3.utils.toWei(data.gas_price.toString(), "gwei"),
-			to: tx._parent._address,
-			data: tx.encodeABI(),
-			value: web3.utils.toWei(data.value.toString(), "ether"),
-			nonce: data.nonce,
-		};
-
-		const signed = await web3.eth.accounts.signTransaction(
-			options,
-			data.wallet.pk
-		);
-
-		web3.eth
-			.sendSignedTransaction(
-				signed.rawTransaction || "",
-				(err: any, hash: string) => {
-					if (err) {
-						console.log(err);
-					} else {
-						console.log(
-							`Transaction sent ! Gwei : ${data.gas_price} | Hash : ${hash} | data :` +
-								data.parameters
-						);
-						embedAndSend(
-							`Transaction sent !`,
-							`${etherscanBase}/tx/${hash}`,
-							"info",
-							[
-								{
-									name: "Price",
-									value: data.value.toString(),
-								},
-								{
-									name: "Gas",
-									value: data.gas_price.toString(),
-								},
-								{
-									name: "Wallet",
-									value: `||${data.wallet.name}||`,
-								},
-								{
-									name: "Parameters",
-									value: data.parameters.join(", "),
-								},
-							]
-						);
-
-						this.update_task_status(data.wallet.name, {
-							lastupdate: Date.now(),
-							status: "pending",
-							message: `${data.gas_price} Gwei | Hash : ${hash} `,
-						});
-					}
-				}
-			)
-			.then((receipt) => {
-				const price = web3.utils.fromWei(
-					(
-						Number(web3.utils.toWei(data.gas_price.toString(), "gwei")) *
-						receipt.gasUsed
-					).toString(),
-					"ether"
-				);
-
-				const message = `Included in block ${receipt.blockNumber} | Cost : ${price} ETH`;
-				embedAndSend(
-					`Included in block !`,
-					`${etherscanBase}block/${receipt.blockNumber}`,
-					"success",
-					[
-						{
-							name: "Price",
-							value: data.value.toString(),
-						},
-						{
-							name: "Gas",
-							value: data.gas_price.toString(),
-						},
-						{
-							name: "Wallet",
-							value: `||${data.wallet.name}||`,
-						},
-						{
-							name: "Gas Cost",
-							value: price,
-						},
-					]
-				);
-				this.update_task_status(data.wallet.name, {
-					lastupdate: Date.now(),
-					status: "success",
-					message,
-				});
-				console.log(message);
-			})
-			.catch((err) => {
-				let message = "";
-				if (err.data === null) {
-					message = err.message.split("at")[0];
-				} else {
-					const errem = err.message.split(":")[0];
-					const price = web3.utils.fromWei(
-						(
-							Number(web3.utils.toWei(data.gas_price.toString(), "gwei")) *
-							err.receipt.gasUsed
-						).toString(),
-						"ether"
-					);
-					message = `${errem} | Cost : ${price} ETH`;
-				}
-				embedAndSend(`Failed !`, message, "error", [
-					{
-						name: "Price",
-						value: data.value.toString(),
-					},
-					{
-						name: "Gas",
-						value: data.gas_price.toString(),
-					},
-					{
-						name: "Wallet",
-						value: `||${data.wallet.name}||`,
-					},
-				]);
-				this.update_task_status(data.wallet.name, {
-					lastupdate: Date.now(),
-					status: "failure",
-					message,
-				});
-				console.log(message);
-			});
-	}
-
 	async applyGasStrategy() {
 		const newGas = getTaskGasWarPrice();
 		let sentNewTxs = false;
 		let allTxDone = true;
 		for (let i = 0; i < this.wallets.length; i++) {
 			const wallet = this.wallets[i];
-			if (wallet && this.transaction[wallet.name] !== undefined) {
-				const oldgas = this.transaction[wallet.name]?.gas_price || 0;
-				const alreadyDone =
-					this.transaction[wallet.name]?.status === "success" ||
-					this.transaction[wallet.name]?.status === "failure";
-				// @ts-expect-error
-				this.transaction[wallet.name].gas_price = newGas;
 
-				if (oldgas !== newGas && !alreadyDone) {
-					// @ts-expect-error
-					this.taskWrite(this.transaction[wallet.name]);
-					sentNewTxs = true;
-				}
+			const [sent, done] = this.transaction[wallet?.name || ""]?.speed_up(
+				newGas
+			) || [false, false];
 
-				if (!alreadyDone) {
-					allTxDone = false;
-				}
+			if (!done) {
+				allTxDone = false;
+			}
+			if (sent) {
+				sentNewTxs = true;
 			}
 		}
 		if (sentNewTxs) {
@@ -506,6 +332,9 @@ class TasksManager {
 				`${this.gas_updated}`,
 				"success"
 			);
+			if (this.gaswar_timer) {
+				clearTimeout(this.gaswar_timer);
+			}
 		}
 	}
 

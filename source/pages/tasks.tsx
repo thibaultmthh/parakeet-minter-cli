@@ -5,10 +5,15 @@ import { TaskList, Task } from "ink-task-list";
 
 import BaseBorder from "../components/baseBorder";
 import { UseInput2 } from "../components/useInput2";
-import { ITXInfo, tasksManager } from "../lib/tasks";
+import { tasksManager } from "../lib/tasks";
 import { IWalletInfo } from "../lib/wallets";
 import { getContractTag } from "../lib/contract";
-import { contract_address, stock_variable } from "../lib/ethTaskWraper";
+import {
+	contract_address,
+	stock_variable,
+} from "../lib/settingsWrapers/ethTaskWraper";
+import { Transaction } from "../lib/transaction";
+import { TaskTx } from "../components/tasks/task";
 
 interface ITasksToDo {
 	label: string;
@@ -66,7 +71,7 @@ export default class Tasks extends React.Component<
 		parameters: Record<string, any[]>;
 		name: string;
 		supply: string;
-		taskData: Record<string, ITXInfo>;
+		taskData: Record<string, Transaction>;
 	}
 > {
 	constructor(props: { setCurrentPage: (page: string) => void }) {
@@ -105,7 +110,9 @@ export default class Tasks extends React.Component<
 			this.setState({ parameters: p });
 		};
 
-		tasksManager.update_frontend_task_data = (t: Record<string, ITXInfo>) => {
+		tasksManager.update_frontend_task_data = (
+			t: Record<string, Transaction>
+		) => {
 			this.setState({ taskData: t });
 		};
 
@@ -190,44 +197,13 @@ export default class Tasks extends React.Component<
 							</Box>
 						</Box>
 						{this.state.walletsInfo.map((wallet) => {
-							const text_parameters = this.state.parameters[wallet.name]
-								?.map((p) => String(p).slice(0, 7))
-								?.join(", ")
-								.replace("\n", "");
-
-							const status = this.state.taskData[wallet.name]?.status;
-							const message = this.state.taskData[wallet.name]?.message;
-
-							let color = "yellow";
-
-							if (status === "success") {
-								color = "green";
-							}
-							if (status === "failure") {
-								color = "red";
-							}
-
 							return (
-								<Box width={"100%"} key={wallet.name}>
-									<Box width={13}>
-										<Text>{wallet.name} </Text>
-									</Box>
-									{/* <Box width={17}>
-										<Text>
-											{wallet.adresse.slice(0, 6)}...
-											{wallet.adresse.slice(36, 42)}
-										</Text>
-									</Box> */}
-									<Box width={30}>
-										<Text>
-											{" -> "}
-											{text_parameters}
-										</Text>
-									</Box>
-									<Box>
-										<Text color={color}>{message}</Text>
-									</Box>
-								</Box>
+								<TaskTx
+									transaction={this.state.taskData[wallet.name] as Transaction}
+									parameters={this.state.parameters[wallet.name] as string[]}
+									wallet={wallet}
+									key={wallet.name}
+								/>
 							);
 						})}
 					</Box>

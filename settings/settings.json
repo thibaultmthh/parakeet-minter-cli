@@ -1,9 +1,11 @@
 {
-	"eth_rpc": "https://mainnet.infura.io/v3/3d690a2741d44fcaa13ed569d2985a38",
-	"testnet_eth_rpc": "https://rinkeby.infura.io/v3/3d690a2741d44fcaa13ed569d2985a38",
-	"webhook_url": "https://discord.com/api/webhooks/934926406398386257/STYpiz-jBw7rFcldDzARxi5_G3Qj_RcB6lYHOwg86aOcAbfZPG5umt3gBqfnzRtJL52s",
+
+	"licence": "ZEN-WE2V-BWTE-SZ3J-EKTZ",
+	"eth_rpc": "https://eth-mainnet.alchemyapi.io/v2/_1q7IL5FRQGVbIvtEedD_5BChnFrgd53",
+	"testnet_eth_rpc": "https://eth-rinkeby.alchemyapi.io/v2/HZXShzVFt6CsVz2YiJKQBDSooEBwPl-L",
+	"webhook_url": "",
 
 	"blocknative_api_key": "07c7e0e1-e6b8-4da1-b464-e7950ba1fb87",
 	"etherscan_api_key": "B4E1A4DMBVC2F1MQ1WJS1D8C3NNWSSN6PF",
-	"testnet": false
+	"testnet": true
 }
