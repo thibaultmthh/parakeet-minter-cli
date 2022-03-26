@@ -22,24 +22,29 @@ function send_sent_webhook(
 	gas_price: number,
 	type: string
 ) {
-	embedAndSend(`Transaction ${type} !`, `${etherscanBase}/tx/${hash}`, "info", [
-		{
-			name: "Price",
-			value: tx_data.value.toString(),
-		},
-		{
-			name: "Gas",
-			value: gas_price.toString(),
-		},
-		{
-			name: "Wallet",
-			value: `||${tx_data.wallet.name}||`,
-		},
-		{
-			name: "Parameters",
-			value: tx_data.parameters?.join(", ") || "",
-		},
-	]);
+	embedAndSend(
+		`Transaction ${type} !`,
+		`${etherscanBase}/tx/${hash}`,
+		type == "canceling" ? "error" : "info",
+		[
+			{
+				name: "Price",
+				value: tx_data.value.toString(),
+			},
+			{
+				name: "Gas",
+				value: gas_price.toString(),
+			},
+			{
+				name: "Wallet",
+				value: `||${tx_data.wallet.name}||`,
+			},
+			{
+				name: "Parameters",
+				value: tx_data.parameters?.join(", ") || "",
+			},
+		]
+	);
 }
 
 function send_failed_webhook(
@@ -146,8 +151,6 @@ export class Transaction {
 			return false;
 		}
 
-		this.current_gas_price = gas_price;
-
 		const tx = this.contract.methods[this.tx_data.function](
 			...(this.tx_data.parameters || [])
 		);
@@ -181,7 +184,7 @@ export class Transaction {
 								this.tx_data.parameters
 						);
 						this.hash = hash;
-
+						this.current_gas_price = gas_price;
 						this.update_status(
 							"pending",
 							`${gas_price} Gwei | Hash : ${hash} `
@@ -238,5 +241,82 @@ export class Transaction {
 		this.current_gas_price = gas_price;
 		this.sendTx(gas_price, "speed_up");
 		return [true, false];
+	}
+
+	async cancel() {
+		if (this.status === "success" || this.status === "failure") {
+			console.log("Transaction already succeded or failed");
+
+			return;
+		}
+		const gas_price_cancel = this.current_gas_price * 1.101;
+		const gas_price_wei = web3.utils.toWei(gas_price_cancel.toString(), "gwei");
+		const gas_price = 30;
+		const options = {
+			from: this.tx_data.wallet.adresse,
+			gas: 22000,
+			gasPrice: gas_price_wei,
+			to: this.tx_data.wallet.adresse,
+			data: "0x",
+			value: "0",
+			nonce: this.tx_data.nonce,
+		};
+
+		const signed = await web3.eth.accounts.signTransaction(
+			options,
+			this.tx_data.wallet.pk
+		);
+
+		web3.eth
+			.sendSignedTransaction(
+				signed.rawTransaction || "",
+				(err: any, hash: string) => {
+					if (err) {
+						console.log(err);
+					} else {
+						console.log(
+							`Transaction cancel sent ! Gwei : ${gas_price} | Hash : ${hash} | data :` +
+								this.tx_data.parameters
+						);
+						this.hash = hash;
+						this.update_status(
+							"pending",
+							`(Canceling) ${gas_price} Gwei | Hash : ${hash} `
+						);
+						send_sent_webhook(this.hash, this.tx_data, gas_price, "canceling");
+					}
+				}
+			)
+			.then((receipt) => {
+				const price = web3.utils.fromWei(
+					(Number(gas_price_wei) * receipt.gasUsed).toString(),
+					"ether"
+				);
+
+				const message = `Canceled in block ${receipt.blockNumber} | Cost : ${price} ETH`;
+
+				send_included_webhook(receipt.blockNumber, this.tx_data, gas_price);
+				this.update_status("failure", message);
+				console.log(message);
+			})
+			.catch((err) => {
+				let message = "";
+				let errorType: "error" | "failure" = "error";
+				if (err.data === null) {
+					message = err.message.split("at")[0];
+				} else {
+					errorType = "failure";
+					const errem = err.message.split(":")[0];
+					const price = web3.utils.fromWei(
+						(Number(gas_price_wei) * err.receipt.gasUsed).toString(),
+						"ether"
+					);
+					message = `${errem} | Cost : ${price} ETH`;
+				}
+
+				send_failed_webhook(message, this.tx_data, gas_price);
+				this.update_status(errorType, message);
+				console.log(message);
+			});
 	}
 }

@@ -86,7 +86,7 @@ class GasManager {
 			const fastGas = await getCurrentGasPrices();
 			const fast = fastGas.blockPrices[0]?.estimatedPrices[0]?.price || 0;
 			this.gas.fast = fast;
-		}, 1000);
+		}, 3000);
 	}
 
 	getGas() {

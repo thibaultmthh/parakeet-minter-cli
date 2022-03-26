@@ -1,4 +1,4 @@
-import { getContractABI } from "./contract";
+import { loadContract } from "./contracts";
 import { getWallets, IWalletInfo } from "./wallets";
 import { web3 } from "./web3";
 import { Contract } from "web3-eth-contract";
@@ -8,10 +8,8 @@ import { getTaskGasPrice, getTaskGasWarPrice } from "./gas";
 import {
 	task_wallets,
 	parameters,
-	monitoring_strategie,
 	contract_address,
 	fetch_parameters_retry_delay,
-	stock_variable,
 	parameters_validation,
 	gas_limit,
 	function_name,
@@ -19,6 +17,7 @@ import {
 	gas_war_strategie,
 } from "./settingWrapers/ethTaskWraper";
 import { Transaction } from "./transaction";
+import { monitoring, startMonitorSupply } from "./monitoring";
 
 class TasksManager {
 	wallets: IWalletInfo[];
@@ -129,26 +128,20 @@ class TasksManager {
 	}
 
 	// Loadings
-	async loadContract() {
+	async loadTaskContract() {
 		return new Promise<string>(async (resolve, reject) => {
 			if (this.contract) {
 				resolve(contract_address);
 				return;
 			}
-			const abi = await getContractABI(contract_address);
-			if (abi) {
-				try {
-					this.contract = new web3.eth.Contract(
-						JSON.parse(abi),
-						contract_address
-					);
-				} catch (e) {
-					console.log(e);
-					reject(e);
-				}
+			try {
+				const contract = await loadContract(contract_address);
+				this.contract = contract;
 				resolve(contract_address);
+			} catch (e) {
+				console.log(e);
+				reject(e);
 			}
-			reject("Could not load contract");
 		});
 	}
 
@@ -246,56 +239,11 @@ class TasksManager {
 
 	// Intervals
 	async startMonitorSupply(callback: (stock: string) => void) {
-		try {
-			tasksManager.supply =
-				(await tasksManager.contract!.methods[stock_variable]().call()) || "0";
-			callback(tasksManager.supply || "x");
-		} catch (e) {}
-		setInterval(async () => {
-			try {
-				tasksManager.supply =
-					(await tasksManager.contract!.methods[stock_variable]().call()) ||
-					"0";
-				callback(tasksManager.supply || "x");
-			} catch (e) {}
-		}, 6000);
+		startMonitorSupply(callback);
 	}
 
 	async monitoring(callback: (message: string) => void) {
-		return new Promise<void>((resolve) => {
-			if (monitoring_strategie.use === "variable") {
-				const i = setInterval(async () => {
-					try {
-						const r = await this.contract!.methods[
-							monitoring_strategie.variable_monitoring.variable
-						]().call();
-						if (r == monitoring_strategie.variable_monitoring.expected_value) {
-							clearInterval(i);
-							resolve();
-						} else {
-							callback(
-								`${r} != ${monitoring_strategie.variable_monitoring.expected_value}`
-							);
-						}
-					} catch (e) {
-						console.log(e);
-						callback("Error monitoring");
-					}
-				}, monitoring_strategie.delay * 1000);
-			} else {
-				const func = async () => {
-					const r = await monitoring_strategie.custom_monitoring();
-					if (r) {
-						clearInterval(i);
-						resolve();
-					} else {
-						callback("Custom monitoring");
-					}
-				};
-				func();
-				const i = setInterval(func, monitoring_strategie.delay * 1000);
-			}
-		});
+		return monitoring(callback);
 	}
 
 	async applyGasStrategy() {
@@ -341,7 +289,7 @@ class TasksManager {
 	async start_task_process() {
 		this.update_frontend_task("Fetch ABI", "", "loading");
 		//1. load the contract
-		this.loadContract()
+		this.loadTaskContract()
 			.then(() => {
 				this.update_frontend_task("Fetch ABI", "OK", "success");
 				//2. load the wallets

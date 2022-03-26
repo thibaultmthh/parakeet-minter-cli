@@ -5,7 +5,12 @@ import cheerio from "cheerio";
 import { etherscan_api_link } from "../constantes";
 import { etherscan_api_key } from "./settingWrapers/settWarper";
 
+import { Contract } from "web3-eth-contract";
+import { web3 } from "./web3";
+
 const abiPath = `${process.cwd()}/data/abi/`;
+
+let contracts: Record<string, Contract> = {};
 
 export async function getContractABI(adresse: string) {
 	const abis = fs.readdirSync(abiPath);
@@ -54,4 +59,25 @@ export async function getContractTag(address: string) {
 		);
 	}
 	return result;
+}
+
+export function loadContract(adresse: string) {
+	return new Promise<Contract>(async (resolve, reject) => {
+		if (contracts[adresse]) {
+			resolve(contracts[adresse] as Contract);
+			return;
+		}
+		const abi = await getContractABI(adresse);
+		if (abi) {
+			try {
+				const contract = new web3.eth.Contract(JSON.parse(abi), adresse);
+				contracts[adresse] = contract;
+				resolve(contract);
+			} catch (e) {
+				console.log(e);
+				reject(e);
+			}
+		}
+		reject("Could not load contract");
+	});
 }

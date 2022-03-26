@@ -38,7 +38,7 @@ export function newEmbed(
 	embed.setTitle(title);
 	embed.setDescription(description);
 	embed.setColor(color);
-	embed.setFooter("Unnamed minter");
+	embed.setFooter({ text: "Unnamed minter" });
 	embed.setThumbnail(
 		"https://cdn.discordapp.com/attachments/943243067492823130/952903899784822854/unnamed_nft.png"
 	);

@@ -7,7 +7,7 @@ import BaseBorder from "../components/baseBorder";
 import { UseInput2 } from "../components/useInput2";
 import { tasksManager } from "../lib/tasks";
 import { IWalletInfo } from "../lib/wallets";
-import { getContractTag } from "../lib/contract";
+import { getContractTag } from "../lib/contracts";
 import {
 	contract_address,
 	stock_variable,
