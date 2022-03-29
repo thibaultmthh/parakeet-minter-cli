@@ -19,7 +19,9 @@
 	"pkg": {
 		"scripts": [],
 		"targets": [
-			"node16-win-x64"
+			"node16-win-x64",
+			"node16-macos-x64",
+			"node16-macos-arm"
 		],
 		"outputPath": "build",
 		"assets": [
