@@ -8,3 +8,4 @@ build
 pre_build
 .DS_Store
 settings/wallets.csv
+*.zip

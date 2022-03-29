@@ -1,6 +1,6 @@
 {
 	"name": "zentaurus",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"license": "MIT",
 	"bin": "pre_build/bundle.js",
 	"engines": {
@@ -45,6 +45,7 @@
 		"meow": "^9.0.0",
 		"node-machine-id": "^1.1.12",
 		"react": "^17.0.2",
+		"toml": "^3.0.0",
 		"web3": "^1.7.1"
 	},
 	"ava": {
