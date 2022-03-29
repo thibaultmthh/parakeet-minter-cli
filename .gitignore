@@ -9,3 +9,4 @@ pre_build
 .DS_Store
 settings/wallets.csv
 data/*
+*.zip
