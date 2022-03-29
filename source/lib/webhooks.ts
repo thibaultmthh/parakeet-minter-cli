@@ -14,9 +14,9 @@ const webhookClient = new WebhookClient({
 export function sendWebhook(embeds?: MessageEmbed[]) {
 	webhookClient.send({
 		embeds,
-		username: "Unnamed minter",
+		username: "Zentaurus minter",
 		avatarURL:
-			"https://cdn.discordapp.com/attachments/943243067492823130/952903899784822854/unnamed_nft.png",
+			"https://cdn.discordapp.com/icons/956911547916091422/af941126eddf3736560061e42d951fc2.webp?size=96",
 	});
 }
 
@@ -40,7 +40,7 @@ export function newEmbed(
 	embed.setColor(color);
 	embed.setFooter({ text: "Unnamed minter" });
 	embed.setThumbnail(
-		"https://cdn.discordapp.com/attachments/943243067492823130/952903899784822854/unnamed_nft.png"
+		"https://cdn.discordapp.com/icons/956911547916091422/af941126eddf3736560061e42d951fc2.webp?size=96"
 	);
 	embed.setTimestamp();
 	if (fields) {
