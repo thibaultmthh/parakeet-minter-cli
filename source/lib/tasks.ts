@@ -5,17 +5,8 @@ import { Contract } from "web3-eth-contract";
 
 import { getTaskGasPrice, getTaskGasWarPrice } from "./gas";
 
-import {
-	task_wallets,
-	parameters,
-	contract_address,
-	fetch_parameters_retry_delay,
-	parameters_validation,
-	gas_limit,
-	function_name,
-	value,
-	gas_war_strategie,
-} from "./settingWrapers/ethTaskWraper";
+import { eth_task_settings } from "./settingWrapers/ethTaskWraper";
+
 import { Transaction } from "./transaction";
 import { monitoring, startMonitorSupply } from "./monitoring";
 
@@ -73,12 +64,12 @@ class TasksManager {
 						this.contract,
 						{
 							wallet,
-							gas_limit,
-							to: contract_address,
+							gas_limit: eth_task_settings.advenced.gas_limit,
+							to: eth_task_settings.contract.contract_address,
 							parameters: this.parameters_per_wallets[wallet.name],
-							value,
+							value: eth_task_settings.contract.value,
 							nonce,
-							function: function_name,
+							function: eth_task_settings.contract.function_name,
 						},
 						() => {
 							this.update_frontend_task_data(this.transaction);
@@ -103,7 +94,7 @@ class TasksManager {
 
 			this.gaswar_timer = setInterval(() => {
 				this.applyGasStrategy();
-			}, gas_war_strategie.resend * 1000);
+			}, eth_task_settings.gas.war.resend * 1000);
 		}
 	}
 
@@ -129,15 +120,16 @@ class TasksManager {
 
 	// Loadings
 	async loadTaskContract() {
+		const adresse = eth_task_settings.contract.contract_address;
 		return new Promise<string>(async (resolve, reject) => {
 			if (this.contract) {
-				resolve(contract_address);
+				resolve(adresse);
 				return;
 			}
 			try {
-				const contract = await loadContract(contract_address);
+				const contract = await loadContract(adresse);
 				this.contract = contract;
-				resolve(contract_address);
+				resolve(adresse);
 			} catch (e) {
 				console.log(e);
 				reject(e);
@@ -153,7 +145,7 @@ class TasksManager {
 			}
 			const allWallets = getWallets();
 			const filteredWallets = allWallets.filter((wallet) =>
-				task_wallets.includes(wallet.name)
+				eth_task_settings.wallets.includes(wallet.name)
 			);
 
 			for (let i = 0; i < filteredWallets.length; i++) {
@@ -192,13 +184,16 @@ class TasksManager {
 								}
 								return;
 							}
-							const params = await parameters(wallet.adresse);
-							const validation = await parameters_validation(params);
+							const params = await eth_task_settings.contract.parameters;
+							// const validation = await parameters_validation(params);
+							const validation = true;
 
 							if (validation) {
 								clearInterval(i);
 								try {
-									this.contract?.methods[function_name](...params);
+									this.contract?.methods[
+										eth_task_settings.contract.function_name
+									](...params);
 								} catch (e: any) {
 									console.log(e);
 
@@ -231,7 +226,7 @@ class TasksManager {
 
 							console.log(e);
 						}
-					}, fetch_parameters_retry_delay);
+					}, 1000);
 				}
 			}
 		});

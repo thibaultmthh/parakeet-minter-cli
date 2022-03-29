@@ -1,15 +1,19 @@
 import { loadContract } from "./contracts";
-import {
-	contract_address,
-	monitoring_strategie,
-	stock_variable,
-} from "./settingWrapers/ethTaskWraper";
+import { eth_task_settings } from "./settingWrapers/ethTaskWraper";
 
 let current_supply: string;
 
+const [contract_address, stock_variable] = [
+	eth_task_settings.contract.contract_address,
+	eth_task_settings.contract.advenced.stock_variable,
+];
+const monitoring_s = eth_task_settings.monitoring;
+
 async function monitorSupply(callback: (supply: string) => void) {
 	try {
-		const contract = await loadContract(contract_address);
+		const contract = await loadContract(
+			eth_task_settings.contract.contract_address
+		);
 		const newSupply = (await contract.methods[stock_variable]().call()) || "0";
 		if (current_supply !== newSupply) {
 			current_supply = newSupply;
@@ -34,20 +38,17 @@ export async function monitoring(callback: (message: string) => void) {
 			let message = "";
 			console.log("monitoring");
 
-			for (let i = 0; i < monitoring_strategie.use.length; i++) {
-				const strategie_type = monitoring_strategie.use[i];
+			for (let i = 0; i < monitoring_s.use.length; i++) {
+				const strategie_type = monitoring_s.use[i];
 				if (strategie_type === "variable") {
 					try {
 						const contract = await loadContract(contract_address);
 						const variable_value = await contract!.methods[
-							monitoring_strategie.variable_monitoring.variable
+							monitoring_s.variable.variable
 						]().call();
-						if (
-							variable_value !=
-							monitoring_strategie.variable_monitoring.expected_value
-						) {
+						if (variable_value != monitoring_s.variable.expected_value) {
 							good = false;
-							message += `${variable_value} != ${monitoring_strategie.variable_monitoring.expected_value}`;
+							message += `${variable_value} != ${monitoring_s.variable.expected_value}`;
 						} else {
 							message += "V OK ";
 						}
@@ -57,21 +58,19 @@ export async function monitoring(callback: (message: string) => void) {
 						// callback("Error monitoring ");
 					}
 				}
-				if (strategie_type == "function") {
-					const r = await monitoring_strategie.custom_monitoring();
-					if (!r) {
-						good = false;
-						message += "F NO";
-					} else {
-						message += "F OK";
-					}
-				}
+				// if (strategie_type == "function") {
+				// 	const r = await monitoring_strategie.custom_monitoring();
+				// 	if (!r) {
+				// 		good = false;
+				// 		message += "F NO";
+				// 	} else {
+				// 		message += "F OK";
+				// 	}
+				// }
 				if (strategie_type == "stock") {
 					if (
-						Number(current_supply) <=
-							monitoring_strategie.stock_monitoring.over ||
-						Number(current_supply) >=
-							monitoring_strategie.stock_monitoring.under
+						Number(current_supply) <= monitoring_s.stock.over ||
+						Number(current_supply) >= monitoring_s.stock.under
 					) {
 						good = false;
 						message += "S NO";
@@ -87,6 +86,6 @@ export async function monitoring(callback: (message: string) => void) {
 			}
 		};
 		funct();
-		i = setInterval(funct, monitoring_strategie.delay * 1000);
+		i = setInterval(funct, monitoring_s.delay * 1000);
 	});
 }

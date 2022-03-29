@@ -8,12 +8,10 @@ import { UseInput2 } from "../components/useInput2";
 import { tasksManager } from "../lib/tasks";
 import { IWalletInfo } from "../lib/wallets";
 import { getContractTag } from "../lib/contracts";
-import {
-	contract_address,
-	stock_variable,
-} from "../lib/settingWrapers/ethTaskWraper";
+
 import { Transaction } from "../lib/transaction";
 import { TaskTx } from "../components/tasks/task";
+import { eth_task_settings } from "../lib/settingWrapers/ethTaskWraper";
 
 interface ITasksToDo {
 	label: string;
@@ -91,7 +89,7 @@ export default class Tasks extends React.Component<
 	override componentDidMount() {
 		// getContractTag()
 		this.updateTask("Fetch task data", "", "loading");
-		getContractTag(contract_address).then((tag) => {
+		getContractTag(eth_task_settings.contract.contract_address).then((tag) => {
 			if (tag) {
 				this.setState({ name: tag });
 				this.updateTask("Fetch task data", "", "success");
@@ -168,7 +166,8 @@ export default class Tasks extends React.Component<
 				>
 					<Text color={"cyan"}>Contract : {this.state.name}</Text>
 					<Text color={"cyan"}>
-						{stock_variable}: {this.state.supply}
+						{eth_task_settings.contract.advenced.stock_variable}:{" "}
+						{this.state.supply}
 					</Text>
 				</Box>
 

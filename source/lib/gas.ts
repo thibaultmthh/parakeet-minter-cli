@@ -1,9 +1,10 @@
 import axios from "axios";
-import { gas_price, gas_war_strategie } from "./settingWrapers/ethTaskWraper";
+import { eth_task_settings } from "./settingWrapers/ethTaskWraper";
 import { blocknative_api_key } from "./settingWrapers/settWarper";
 import { web3 } from "./web3";
 // import { web3 } from "./web3";
 
+const gas_settings = eth_task_settings.gas;
 interface gasData {
 	currentBlockNumber: number;
 	msSinceLastBlock: number;
@@ -117,13 +118,13 @@ function taskGasPrice(gas: string) {
 }
 
 export function getTaskGasPrice() {
-	return Math.round(taskGasPrice(gas_price) * 100) / 100;
+	return Math.round(taskGasPrice(gas_settings.start_gas) * 100) / 100;
 }
 
 export function getTaskGasWarPrice() {
-	const gas = taskGasPrice(gas_war_strategie.gas_price);
-	if (gas > gas_war_strategie.max_gas_price) {
-		return gas_war_strategie.max_gas_price;
+	const gas = taskGasPrice(gas_settings.war.new_gas);
+	if (gas > gas_settings.war.max_gas_price) {
+		return gas_settings.war.max_gas_price;
 	}
 	return Math.round(gas * 10) / 10;
 }
