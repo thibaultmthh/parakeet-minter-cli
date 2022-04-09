@@ -1,38 +1,40 @@
 
 
-wallets = ["main"]
+wallets = ["23"]
 
 [contract]
-contract_address = "0xe9c45ba375dd17f99a5d4996922085c05bfc528f"
+contract_address = "0x185dEA43d09e2196358a59d49573438aD62a69c4"
 function_name = "mint"
-value = 0.02
-parameters = [3]
+value = 0.3
+parameters = [2]
 
 [contract.advenced]
 stock_variable = "totalSupply"
 
 
-
 [gas]
-start_gas = "xs1.1" #fast , slow, xs1.1 ( 1.1 x the standard gas) , xf2.0 (2.0 x the fast gas)
+start_gas = "600" #fast , slow, xs1.1 ( 1.1 x the standard gas) , xf2.0 (2.0 x the fast gas)
 
 [gas.war]
 resend = 2 # in seconds
-new_gas = "xs1.1"
-max_gas_price= 900
+new_gas = "xf1.3"
+max_gas_price= 2300
 
 
 [monitoring]
-delay = 3
-use = ["variable", "stock"]
+delay = 2
+use = ["timestamp"] # "variable" , "stock" , "timestamp"
 
 [monitoring.variable]
-variable = "IS_SALE_ACTIVE"
+variable = "saleActive"
 expected_value = true
 
 [monitoring.stock]
-over = 60
-under = 9000
+over = 0
+under = 0
+
+[monitoring.timestamp]
+over = 1649527017
 
 [cancel]
 delay_checks = 5

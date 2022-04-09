@@ -31,6 +31,9 @@ interface IConfig {
 			over: number;
 			under: number;
 		};
+		timestamp: {
+			over: number;
+		};
 	};
 	cancel: {
 		delay_checks: number;

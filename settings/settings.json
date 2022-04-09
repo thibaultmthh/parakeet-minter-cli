@@ -3,7 +3,7 @@
 	"licence": "ZEN-WE2V-BWTE-SZ3J-EKTZ",
 	"eth_rpc": "https://eth-mainnet.alchemyapi.io/v2/_1q7IL5FRQGVbIvtEedD_5BChnFrgd53",
 	"testnet_eth_rpc": "https://eth-rinkeby.alchemyapi.io/v2/HZXShzVFt6CsVz2YiJKQBDSooEBwPl-L",
-	"webhook_url": "",
+	"webhook_url": "https://discord.com/api/webhooks/960895600914731018/4FKnkd3QufsR3wRbaPwKGTYdyAeEkvZGLgL3lwxUWHz0xXfhc7P0XFm62LJJt8y4wrjL",
 
 	"blocknative_api_key": "07c7e0e1-e6b8-4da1-b464-e7950ba1fb87",
 	"etherscan_api_key": "B4E1A4DMBVC2F1MQ1WJS1D8C3NNWSSN6PF",

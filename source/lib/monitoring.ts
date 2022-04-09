@@ -58,15 +58,15 @@ export async function monitoring(callback: (message: string) => void) {
 						// callback("Error monitoring ");
 					}
 				}
-				// if (strategie_type == "function") {
-				// 	const r = await monitoring_strategie.custom_monitoring();
-				// 	if (!r) {
-				// 		good = false;
-				// 		message += "F NO";
-				// 	} else {
-				// 		message += "F OK";
-				// 	}
-				// }
+				if (strategie_type == "timestamp") {
+					monitoring_s.timestamp.over;
+					if (monitoring_s.timestamp.over < (Date.now() + 200) / 1000) {
+						message += "TT OK";
+					} else {
+						good = false;
+						message += "TT NO";
+					}
+				}
 				if (strategie_type == "stock") {
 					if (
 						Number(current_supply) <= monitoring_s.stock.over ||
